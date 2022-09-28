@@ -50,7 +50,7 @@ namespace UserMaintenance
                 StreamWriter sw = new StreamWriter(sfd.FileName,false,Encoding.UTF8);
                 foreach (var u in users)
                 {
-                    sw.WriteLine($"{u.FullName}");
+                    sw.WriteLine($"{u.ID};{u.FullName}");
                 }
                 sw.Close();
             }
