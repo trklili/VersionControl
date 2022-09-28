@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace UserMaintenance
             label1.Text = Resource1.FullName; // label1
              // label2
             button1.Text = Resource1.Add; // button1
+            button2.Text = Resource1.Write;
 
             // listbox1
             listBox1.DataSource = users;
@@ -35,6 +38,22 @@ namespace UserMaintenance
                 
             };
             users.Add(u);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = @"C:\Users\torok\source\repos\VersionControl\UserMaintenance\UserMaintenance\bin\Debug";
+
+            if (sfd.ShowDialog()==DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(sfd.FileName,false,Encoding.UTF8);
+                foreach (var u in users)
+                {
+                    sw.WriteLine($"{u.FullName}");
+                }
+                sw.Close();
+            }
         }
     }
 }
