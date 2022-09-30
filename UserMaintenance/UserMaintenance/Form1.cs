@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,10 +61,12 @@ namespace UserMaintenance
 
         private void button3_Click(object sender, EventArgs e)
         {
-            {
-               
-            }
+            User törlendo = (User)listBox1.SelectedItem;
+            users.Remove(törlendo);
+
+
         }
+
     }
 }
 
