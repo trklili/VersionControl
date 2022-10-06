@@ -109,6 +109,8 @@ namespace negyedikhet
             headerRange.RowHeight = 40;
             headerRange.Interior.Color = Color.LightBlue;
             headerRange.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThick);
+
+           
         }
 
         private string GetCell(int x, int y)
