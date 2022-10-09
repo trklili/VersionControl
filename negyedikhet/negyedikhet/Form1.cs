@@ -16,12 +16,27 @@ namespace negyedikhet
     {
         RealEstateEntities context = new RealEstateEntities();
         List<Flat> Flats;
-
+        
+        Excel.Application xlApp; // A Microsoft Excel alkalmazás
+        Excel.Workbook xlWB; // A létrehozott munkafüzet
+        Excel.Worksheet xlSheet; // Munkalap a munkafüzeten belül
 
         public Form1()
         {
             InitializeComponent();
             LoadData();
+            CreateTable();
+            CreateExcel();
+        } 
+        
+        private void LoadData()
+        {
+            Flats = context.Flats.ToList();
+            // A List<Flat> Flats = context.Flats.ToList() sor lemásolja a context.Flats táblát egy Flats nevű Flat típusú elemekből álló listába a memóriába. A listán végrehajtott LINQ műveletek már lokálisan kerülnek kiszámolásra a szerver terhelése nélkül. (LINQ to SQL vs. LINQ to objets)
+        }
+
+        private void CreateExcel()
+        {
             try
             {
                 // Excel elindítása és az applikáció objektum betöltése
@@ -54,11 +69,10 @@ namespace negyedikhet
 
 
         }
-         Excel.Application xlApp; // A Microsoft Excel alkalmazás
-                    Excel.Workbook xlWB; // A létrehozott munkafüzet
-                    Excel.Worksheet xlSheet; // Munkalap a munkafüzeten belül
+      
+    
 
-        private void CreateTable()
+        public void CreateTable()
         {
             string[] headers = new string[] 
             {
@@ -72,9 +86,11 @@ namespace negyedikhet
              "Ár (mFt)",
              "Négyzetméter ár (Ft/m2)"
             };
+
+            //for ciklus segítségével írd ki a tömb elemeit a munkalap első sorába. 
             for (int i = 0; i < headers.Length; i++)
             {
-                xlSheet.Cells[1, 1] = headers[0];
+                xlSheet.Cells[1, i+1] = headers[i];
             }
 
             object[,] values = new object[Flats.Count, headers.Length];
@@ -86,21 +102,47 @@ namespace negyedikhet
                 values[counter, 1] = f.Vendor;
                 values[counter, 2] = f.Side;
                 values[counter, 3] = f.District;
-                values[counter, 4] = f.Elevator;
-                //A lift oszlopban a true és a false értékek helyett "Van" és "Nincs" jelenjen meg.
+                if (f.Elevator == true)
+                {
+                    values[counter, 4] = "Van";
+                }
+                else values[counter, 4] = "Nincs";
+
                 values[counter, 5] = f.NumberOfRooms;
                 values[counter, 6] = f.FloorArea;
                 values[counter, 7] = f.Price;
-                values[counter, 8] = "";
-                counter++;
+                values[counter, 8] = $"=(H{counter + 2} /G{counter + 2}) * 1000000";
 
                 
+                counter++;
+
+
             }
             xlSheet.get_Range(
              GetCell(2, 1),
              GetCell(1 + values.GetLength(0), values.GetLength(1))).Value2 = values;
             //Az utolsó (9.) oszlopba egy Excel képlet kerüljön string formában. Az Excel képletek szövegesek és mindig "=" jellel kezdődnek. A pontos referenciák meghatározásához használd a korábban létrehozott GetCell függvényt.
 
+           
+            //Törzs
+
+            int lastRowID = xlSheet.UsedRange.Rows.Count;
+            Excel.Range tableRange = xlSheet.get_Range(GetCell(2, 1), GetCell(lastRowID, headers.Length));
+            tableRange.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThick);
+
+            //1.oszlop
+            Excel.Range firstcolumnRange = xlSheet.get_Range(GetCell(2, 1), GetCell(lastRowID - 1, 1));
+            firstcolumnRange.Interior.Color = Color.LightYellow;
+            firstcolumnRange.Font.Bold = true;
+
+            //utolso oszlop
+            int lastColID = xlSheet.UsedRange.Columns.Count;
+
+            Excel.Range lastcolumnRange = xlSheet.get_Range(GetCell(2, lastColID), GetCell(lastRowID - 1, lastColID));
+            lastcolumnRange.Interior.Color = Color.LightGreen;
+            lastcolumnRange.NumberFormat = "0.00";
+
+            //header
             Excel.Range headerRange = xlSheet.get_Range(GetCell(1, 1), GetCell(1, headers.Length));
             headerRange.Font.Bold = true;
             headerRange.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
@@ -110,7 +152,6 @@ namespace negyedikhet
             headerRange.Interior.Color = Color.LightBlue;
             headerRange.BorderAround2(Excel.XlLineStyle.xlContinuous, Excel.XlBorderWeight.xlThick);
 
-           
         }
 
         private string GetCell(int x, int y)
@@ -130,12 +171,7 @@ namespace negyedikhet
             return ExcelCoordinate;
         }
 
-        private void LoadData()
-        {
-            Flats = context.Flats.ToList();
-            // A List<Flat> Flats = context.Flats.ToList() sor lemásolja a context.Flats táblát egy Flats nevű Flat típusú elemekből álló listába a memóriába. A listán végrehajtott LINQ műveletek már lokálisan kerülnek kiszámolásra a szerver terhelése nélkül. (LINQ to SQL vs. LINQ to objets)
-        }
-
+       
        
 
  
