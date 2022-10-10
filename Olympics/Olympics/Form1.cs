@@ -42,12 +42,19 @@ namespace Olympics
                             int.Parse(sor[7]),
                         }
                     };
-
+                    results.Add(eredmeny);
 
                 }
             }
         }
 
+        private void Evvalaszto()
+        {
+            var years = (from r in results
+                         orderby r.Year
+                         select r.Year).Distinct();
+            comboBox1.DataSource = years.ToList();
+        }
 
 
     }
