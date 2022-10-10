@@ -1,5 +1,6 @@
 ﻿using Olympics.medálok;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,12 +11,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Olympics
 {
     public partial class Form1 : Form
     {
         List<OlympicResult> results = new List<OlympicResult>();
+        Excel.Application xlApp;
+        Excel.Workbook xlWB;
+        Excel.Worksheet xlSheet;
         public Form1()
         {
             InitializeComponent();
@@ -95,6 +101,59 @@ namespace Olympics
             }
         }
 
+        private void CreateExcel()
+        {
+            //kimeneti állomány fejlécei rendre a következők: Helyezés, Ország, Arany, Ezüst, Bronz
+            var headers = new string[]
+            {
+                "Helyezés",
+                "Ország",
+                "Arany",
+                "Ezüst",
+                "Bronz"
+            };
+            //LINQ segítségével szűrd le a results tartalmát úgy, hogy csak a legördülő lista szerint kiválasztott éve értékei szerepeljenek benne, és az értékek a helyezés szerint legyenek sorba rendezve.
+            for (int i = 0; i < headers.Length; i++)
+                xlSheet.Cells[1, i + 1] = headers[i];
+
+            var filteredResults = from r in results
+                                  where r.Year == (int)comboBox1.SelectedItem
+            orderby r.Position
+                                  select r;
+            //Menj végig a szűrt lista sorain, és értelemszerűen írd az értékeket az Excel soraiba.
+            var counter = 2;
+            foreach (var r in filteredResults)
+            {
+                xlSheet.Cells[counter, 1] = r.Position;
+                xlSheet.Cells[counter, 2] = r.Country;
+                for (int i = 0; i <= 2; i++)
+                    xlSheet.Cells[counter, i + 3] = r.Medals[i];
+                counter++;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                xlApp = new Excel.Application();
+                xlWB = xlApp.Workbooks.Add(Missing.Value);
+                xlSheet = xlWB.ActiveSheet;
+
+                CreateExcel();
+
+                xlApp.Visible = true;
+                xlApp.UserControl = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                xlWB.Close(false, Type.Missing, Type.Missing);
+                xlApp.Quit();
+                xlWB = null;
+                xlApp = null;
+            }
+        }
 
     }
 }
