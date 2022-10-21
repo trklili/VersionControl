@@ -19,21 +19,41 @@ namespace hatodikhet
     {
 
         BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> Currencies = new BindingList<string>();
         public Form1()
         {
             InitializeComponent();
-
+            RequestCurrencies();
+            comboBox1.DataSource = Currencies;
             RefreshData();
+           
 
+        }
+
+        private void RequestCurrencies()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+            var request = new GetCurrenciesRequestBody();
+            var MnbGetExResp = mnbService.GetCurrencies(request);
+            var result = MnbGetExResp.GetCurrenciesResult;
+
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(result);
+            foreach (XmlElement x in xml.DocumentElement.ChildNodes[0])
+            {
+                Currencies.Add(x.InnerText);
+
+            }
         }
 
         private void RefreshData()
         {
             Rates.Clear();
-            Webszolg();
+            
 
-
+            chartRateData.DataSource = Rates;
             dataGridView1.DataSource = Rates;
+            Webszolg();
 
 
             Adatmegjelenites();
@@ -73,9 +93,11 @@ namespace hatodikhet
                 rate.Date = DateTime.Parse(element.GetAttribute("date"));
 
                 var childElement = (XmlElement)element.ChildNodes[0];
-                rate.Currency = childElement.GetAttribute("curr");
+                if (childElement == null) continue;
 
-                
+                rate.Currency = childElement.GetAttribute("request");
+
+
                 var unit = decimal.Parse(childElement.GetAttribute("unit"));
                 var value = decimal.Parse(childElement.InnerText);
                 if (unit != 0)
@@ -86,7 +108,7 @@ namespace hatodikhet
 
         private void Adatmegjelenites()
         {
-            chartRateData.DataSource = Rates;
+            
 
             var series = chartRateData.Series[0];
             series.ChartType = SeriesChartType.Line;
