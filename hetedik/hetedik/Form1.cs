@@ -95,5 +95,18 @@ namespace hetedik
             }
             return value;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = Application.StartupPath;
+            sfd.DefaultExt = ".txt";
+            sfd.AddExtension = true;
+            if (sfd.ShowDialog()==DialogResult.OK)
+            {
+                Streamwriter sd í7
+            }
+
+        }
     }
 }
