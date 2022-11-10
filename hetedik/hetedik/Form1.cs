@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,7 +97,7 @@ namespace hetedik
             return value;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+       /* public void button1_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.InitialDirectory = Application.StartupPath;
@@ -104,9 +105,16 @@ namespace hetedik
             sfd.AddExtension = true;
             if (sfd.ShowDialog()==DialogResult.OK)
             {
-                Streamwriter sd í7
+                StreamWriter sw = new StreamWriter(sfd.FileName,false,Encoding.UTF8);
+                foreach (var ny in lista)
+                {
+                    sw.WriteLine( $"{ny.z },{})
+                }
+
+
             }
 
         }
+       */
     }
 }
