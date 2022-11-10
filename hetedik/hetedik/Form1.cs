@@ -106,15 +106,16 @@ namespace hetedik
             if (sfd.ShowDialog()==DialogResult.OK)
             {
                 StreamWriter sw = new StreamWriter(sfd.FileName,false,Encoding.UTF8);
-                foreach (var ny in lista)
+                foreach (var ny in nyereségekRendezve)
                 {
-                    sw.WriteLine( $"{ny.z },{})
+                    //sw.WriteLine( $"{ny.z},{ny.}
                 }
-
+                sw.Close();
 
             }
 
         }
        */
+       
     }
 }
