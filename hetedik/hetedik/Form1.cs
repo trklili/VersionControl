@@ -97,25 +97,33 @@ namespace hetedik
             return value;
         }
 
-       /* public void button1_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        
+        
+        private void button1_Click_1(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.InitialDirectory = Application.StartupPath;
+            sfd.Filter = "vesszővel elválasztott (*.csv) | *.csv";
             sfd.DefaultExt = ".txt";
             sfd.AddExtension = true;
-            if (sfd.ShowDialog()==DialogResult.OK)
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                StreamWriter sw = new StreamWriter(sfd.FileName,false,Encoding.UTF8);
-                foreach (var ny in nyereségekRendezve)
+                StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.Default);
+                sw.WriteLine($"{"Időszak"}; {"Nyereség"}");
+
+                foreach (var v in Ticks)
                 {
-                    //sw.WriteLine( $"{ny.z},{ny.}
+                    sw.WriteLine($"{v.Tick_id}; {v.Price}");
+
                 }
                 sw.Close();
-
             }
-
         }
-       */
-       
     }
 }
