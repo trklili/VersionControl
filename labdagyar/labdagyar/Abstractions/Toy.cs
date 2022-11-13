@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace labdagyar.Abstractions
 {
-    abstract class Toy:Label
+    public abstract class Toy:Label
     {
         public Toy()
         {
