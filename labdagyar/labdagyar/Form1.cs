@@ -69,7 +69,10 @@ namespace labdagyar
 
         private void ball_btn_Click(object sender, EventArgs e)
         {
-            Factory = new BallFactory();
+            Factory = new BallFactory
+            {
+                BallColor = color_btn.BackColor
+            };
         }
 
         private void DisplayNext()
