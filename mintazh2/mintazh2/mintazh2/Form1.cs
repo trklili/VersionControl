@@ -19,7 +19,10 @@ namespace mintazh2
        List<Product> _products = new List<Product>();
         public Form1()
         {
+            AutoScroll=true;
             InitializeComponent();
+            GetProducts();
+            Productlist();
             
         }
 
@@ -33,11 +36,17 @@ namespace mintazh2
             }
         }
 
+        //Készíts visszatérési érték nélküli függvényt, amely a mellékelt Menu.xml-ből tölti be a termékeket az előző lépésben létrehozott függvény segítségével.
         private void GetProducts()
         {
+            //Hívd meg a függvényben a 2.lépésben létrehozott betöltő metódust „Menu.xml” paraméterrel
             var xml = new XmlDocument();
             xml.LoadXml(GetXml("Menu.xml"));
 
+            /* Egy megfelelő ciklus segítségével haladj végig az XML bejegyzésein.
+            a. A ciklusban mentsd ki egy-egy változóba a „name”, a „description”, a „calories” és a „type” értékeket. Ehhez használhatod az XmlElement osztály SelectSingleNode függvényét, vagy belső ciklus segítségével vizsgáld meg a gyermekelemeket és vedd a megfelelő nevűek értékét.
+            b. A „type” függvényében („food” vagy „drink” lehet) hozd létre a megfelelő osztálypéldányt és töltsd fel a lehetséges értékeit.
+            c. Add a példányt a _products listához*/
             foreach (XmlElement element in xml.DocumentElement)
             {
                 var name = element.SelectSingleNode("name").InnerText;
@@ -47,23 +56,38 @@ namespace mintazh2
 
                 if (type == "food")
                 {
-                    var p = new Food()
+                    var f = new Food()
                     {
                         Title = name,
                         Calories = int.Parse(calories),
                         Description = description
                     };
-                    _products.Add(p);
+                    _products.Add(f);
                 }
                 else
                 {
-                    var p = new Drink()
+                    var d = new Drink()
                     {
                         Title = name,
                         Calories = int.Parse(calories)
                     };
-                    _products.Add(p);
+                    _products.Add(d);
                 }
+            }
+        }
+
+        private void Productlist()
+        {
+            var topPosition = 0;
+            var sortedProducts = from p in _products
+                                 orderby p.Title
+                                 select p;
+            foreach (var item in sortedProducts)
+            {
+                item.Left = 0;
+                item.Top = topPosition;
+                Controls.Add(item);
+                topPosition += item.Height;
             }
         }
 
