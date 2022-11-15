@@ -21,8 +21,8 @@ namespace mintazh2.Abstarctions
             }
         }
 
-        private string _calories;
-        public string Calories
+        private int _calories;
+        public int Calories
         {
             get { return _calories; }
             set 

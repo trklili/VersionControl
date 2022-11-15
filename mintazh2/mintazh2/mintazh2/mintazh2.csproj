@@ -49,6 +49,12 @@
     <Compile Include="Abstarctions\Product.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Entities\Drink.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Entities\Food.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,8 +85,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
