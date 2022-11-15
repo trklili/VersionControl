@@ -80,12 +80,45 @@ namespace labdagyar
             if (_nextToy != null)
                 Controls.Remove(_nextToy);
             _nextToy = Factory.CreateNew();
-            _nextToy.Top = label1.Top + label1.Height + 20;
+            _nextToy.Top = label1.Top + label1.Height + 10;
             _nextToy.Left = label1.Left;
             Controls.Add(_nextToy);
         }
 
         private void color_btn_Click(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+            var colorPicker = new ColorDialog();
+
+            colorPicker.Color = button.BackColor;
+            if (colorPicker.ShowDialog() != DialogResult.OK)
+                return;
+            button.BackColor = colorPicker.Color;
+        }
+
+        private void prsnt_btn_Click(object sender, EventArgs e)
+        {
+
+            Factory = new PresentFactory
+            {
+                BoxColor = box_color.BackColor,
+                RibbonColor = ribbin_color.BackColor
+            };
+
+        }
+
+        private void box_color_Click(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+            var colorPicker = new ColorDialog();
+
+            colorPicker.Color = button.BackColor;
+            if (colorPicker.ShowDialog() != DialogResult.OK)
+                return;
+            button.BackColor = colorPicker.Color;
+        }
+
+        private void ribbin_color_Click(object sender, EventArgs e)
         {
             var button = (Button)sender;
             var colorPicker = new ColorDialog();
