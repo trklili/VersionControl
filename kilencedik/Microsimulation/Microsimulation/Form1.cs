@@ -26,14 +26,15 @@ namespace Microsimulation
         public Form1()
         {
             InitializeComponent();
-            Population = GetPopulation(@"C:\Windows\Temp\nép.csv");
-            BirthProbabilities = GetBirthProbabilities(@"C:\Windows\Temp\születés.csv");
-            DeathProbabilities = GetDeathProbabilities(@"C:\Windows\Temp\halál.csv");
+            
             
         }
 
         private void Simulation()
         {
+            Population = GetPopulation(textBox1.Text);
+            BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
+            DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
             int end = (int)numericUpDown1.Value;
             for (int year = 2005; year <= end; year++)
             {
@@ -50,6 +51,7 @@ namespace Microsimulation
                                   where x.Gender == Gender.Male && x.IsAlive
                                   select x).Count();
                 males.Add(nbrOfMales);
+
                 int nbrOfFemales = (from x in Population
                                     where x.Gender == Gender.Female && x.IsAlive
                                     select x).Count();
@@ -192,7 +194,7 @@ namespace Microsimulation
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                InitialDirectory = @"C:\Windows\Temp",
+                InitialDirectory = @"C:\Temp",
                 Title = "Browse Text Files",
 
                 CheckFileExists = true,
