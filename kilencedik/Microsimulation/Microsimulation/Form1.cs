@@ -19,6 +19,10 @@ namespace Microsimulation
         List<BirthProbability> BirthProbabilities = new List<BirthProbability>();
         List<DeathProbability> DeathProbabilities = new List<DeathProbability>();
         Random rng = new Random(1234);
+
+        List<int> males = new List<int>();
+        List<int> females = new List<int>();
+        List<int> years = new List<int>();
         public Form1()
         {
             InitializeComponent();
@@ -30,21 +34,27 @@ namespace Microsimulation
 
         private void Simulation()
         {
-            for (int year = 2005; year <= numericUpDown1.Value; year++)
+            int end = (int)numericUpDown1.Value;
+            for (int year = 2005; year <= end; year++)
             {
+               
                 // Végigmegyünk az összes személyen
                 for (int i = 0; i < Population.Count; i++)
                 {
-                    // Ide jön a szimulációs lépés
-                   // SimStep(year,Person);
+                    Person p = new Person();
+                    p = Population[i];
+                    SimStep(year, p);
                 }
 
                 int nbrOfMales = (from x in Population
                                   where x.Gender == Gender.Male && x.IsAlive
                                   select x).Count();
+                males.Add(nbrOfMales);
                 int nbrOfFemales = (from x in Population
                                     where x.Gender == Gender.Female && x.IsAlive
                                     select x).Count();
+                females.Add(nbrOfFemales);
+                years.Add(year);
                 Console.WriteLine(
                     string.Format("Év:{0} Fiúk:{1} Lányok:{2}", year, nbrOfMales, nbrOfFemales));
             }
@@ -150,10 +160,32 @@ namespace Microsimulation
                 }
             }
         }
+        private void DisplayResults()
+        {
+            string result = "";
+
+            for (int i = 0; i < years.Count(); i++)
+            {
+
+                string r;
+                string r1 = result;
+                int m = males[i];
+                int f = females[i];
+                int y = years[i];
+
+                r = "Szimulációs év: " + y + "\n \t Fiúk: " + m + "\n \t Lányok: " + f + "\n";
+
+                result = result + r;
+            }
+
+            richTextBox1.Text = result;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            richTextBox1.Clear();
             Simulation();
+            DisplayResults();
         }
 
         private void button2_Click(object sender, EventArgs e)
