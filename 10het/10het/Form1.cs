@@ -78,7 +78,7 @@ namespace _10het
             gc.Start();
 
             var winners = from p in topPerformers
-                          where p.IsWinner
+                          where !p.IsWinner
                           select p;
 
             if (winners.Count() > 0)
@@ -99,7 +99,6 @@ namespace _10het
             gc.AddPlayer(winnerBrain.Clone());
             gc.AddPlayer();
             gc.Start(true);
-
             ga.Focus();
 
         }
