@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WorldsHardestGame;
 
 namespace _10het
 {
@@ -41,6 +42,65 @@ namespace _10het
                 gc.AddPlayer(nbrOfSteps);
             }
             gc.Start();
+
+        }
+
+        private void Gc_GameOver(object sender)
+        {
+            generation++;
+
+            label1.BringToFront();
+            label1.Text = string.Format(
+                "{0}. generáció",
+                generation);
+
+
+            var playerList = from p in gc.GetCurrentPlayers()
+                             orderby p.GetFitness() descending
+                             select p;
+            var topPerformers = playerList.Take(populationSize / 2).ToList();
+
+
+            gc.ResetCurrentLevel();
+            foreach (var p in topPerformers)
+            {
+                var b = p.Brain.Clone();
+                if (generation % 3 == 0)
+                    gc.AddPlayer(b.ExpandBrain(nbrOfStepsIncrement));
+                else
+                    gc.AddPlayer(b);
+
+                if (generation % 3 == 0)
+                    gc.AddPlayer(b.Mutate().ExpandBrain(nbrOfStepsIncrement));
+                else
+                    gc.AddPlayer(b.Mutate());
+            }
+            gc.Start();
+
+            var winners = from p in topPerformers
+                          where p.IsWinner
+                          select p;
+
+            if (winners.Count() > 0)
+            {
+                winnerBrain = winners.FirstOrDefault().Brain.Clone();
+                gc.GameOver -= Gc_GameOver;
+
+                button1.Visible = true;
+
+                return;
+            }
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            gc.ResetCurrentLevel();
+            gc.AddPlayer(winnerBrain.Clone());
+            gc.AddPlayer();
+            gc.Start(true);
+
+            ga.Focus();
 
         }
     }
